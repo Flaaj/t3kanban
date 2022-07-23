@@ -45,6 +45,9 @@ const EditableText: FC<IEditableText> = ({ name, className, tag, variant, type =
         form.handleSubmit();
         setIsEditting(false);
       }
+      if (e.key === "Escape") {
+        setIsEditting(false);
+      }
     },
     ...input,
   };
