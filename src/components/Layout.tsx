@@ -85,7 +85,7 @@ const SiteLogo: FC = () => {
 const LoggedAs = () => {
   const session = useSession();
 
-  if (session.status === "unauthenticated") {
+  if (session.status === "loading") {
     return null;
   }
 
