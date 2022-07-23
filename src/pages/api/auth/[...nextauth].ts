@@ -23,7 +23,6 @@ export const authOptions: NextAuthOptions = {
     // ...add more providers here
   ],
   callbacks: {
-    redirect: () => `https://${process.env.VERCEL_URL}`,
     async session({ session, user }) {
       session.userId = user.id;
       return session;
