@@ -18,26 +18,25 @@ import { Task, TaskStatus } from "@prisma/client";
 
 const Board = () => {
   const router = useRouter();
-  const tasks = trpc.useQuery(["tasks.getAll", { boardId: router.query.boardId as string }]);
+  const { data: tasks } = trpc.useQuery(["tasks.getAll", { boardId: router.query.boardId as string }], {
+    select: (data) => {
+      const tasks: { [key in TaskStatus]: Task[] } = {
+        BACKLOG: [],
+        TODO: [],
+        IN_PROGRESS: [],
+        ICE_BOXED: [],
+        TESTING: [],
+        DONE: [],
+      };
+      if (!data) return tasks;
 
-  const tasksByStatus = useMemo(() => {
-    const object: { [key in TaskStatus]: Task[] } = {
-      BACKLOG: [],
-      TODO: [],
-      IN_PROGRESS: [],
-      ICE_BOXED: [],
-      TESTING: [],
-      DONE: [],
-    };
+      data.forEach((task) => tasks[task.status].push(task));
 
-    if (!tasks.data) return object;
+      return tasks;
+    },
+  });
 
-    tasks.data.forEach((task) => object[task.status].push(task));
-
-    return object;
-  }, [tasks.data]);
-
-  if (tasks.isLoading) {
+  if (!tasks) {
     return <>Loading...</>;
   }
 
@@ -53,32 +52,32 @@ const Board = () => {
         <BoardColumn //
           label="Backlog"
           status={TaskStatus.BACKLOG}
-          todos={tasksByStatus.BACKLOG}
+          todos={tasks.BACKLOG}
         />
         <BoardColumn //
           label="Todo"
           status={TaskStatus.TODO}
-          todos={tasksByStatus.TODO}
+          todos={tasks.TODO}
         />
         <BoardColumn //
           label="In progress"
           status={TaskStatus.IN_PROGRESS}
-          todos={tasksByStatus.IN_PROGRESS}
+          todos={tasks.IN_PROGRESS}
         />
         <BoardColumn //
           label="Ice boxed"
           status={TaskStatus.ICE_BOXED}
-          todos={tasksByStatus.ICE_BOXED}
+          todos={tasks.ICE_BOXED}
         />
         <BoardColumn //
           label="Testing"
           status={TaskStatus.TESTING}
-          todos={tasksByStatus.TESTING}
+          todos={tasks.TESTING}
         />
         <BoardColumn //
           label="Done"
           status={TaskStatus.DONE}
-          todos={tasksByStatus.DONE}
+          todos={tasks.DONE}
         />
       </div>
     </>

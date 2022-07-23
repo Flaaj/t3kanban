@@ -1,6 +1,6 @@
-import { TRPCError } from "@trpc/server";
-import { z } from "zod";
-import { createRouter } from "./context";
+import { TRPCError } from '@trpc/server';
+
+import { createRouter } from './context';
 
 export const authRouter = createRouter()
   .query("getSession", {

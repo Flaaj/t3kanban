@@ -1,5 +1,5 @@
-const capitalizeString = (string: string, type: "eachWord" | "wholeString" = "wholeString") => {
-  if (type === "eachWord") {
+const capitalizeString = (string: string, type: "EACH_WORD" | "WHOLE_STRING" = "WHOLE_STRING") => {
+  if (type === "EACH_WORD") {
     return string
       .split(" ")
       .map((word) => capitalize(word))
