@@ -32,10 +32,7 @@ const Board = () => {
 
     if (!tasks.data) return object;
 
-    tasks.data.forEach((task) => {
-      const TaskStatus = task.status as TaskStatus;
-      object[TaskStatus].push(task);
-    });
+    tasks.data.forEach((task) => object[task.status].push(task));
 
     return object;
   }, [tasks.data]);
@@ -103,7 +100,7 @@ const BoardColumn: FC<IBoardColumn> = ({ todos, label, status }) => {
       <ul className="h-full">
         {todos.map((todo) => (
           <li key={todo.id} className="mb-2 last:mb-0">
-            <TodoCard {...todo} status={todo.status as TaskStatus} />
+            <TodoCard {...todo} status={todo.status} />
           </li>
         ))}
         <AddNewTaskButton status={status} />

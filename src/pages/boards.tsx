@@ -1,15 +1,18 @@
-import { Board, TaskStatus } from "@prisma/client";
+import { FC, MouseEventHandler, useContext, useMemo, useState } from "react";
+
 import { Form, Formik } from "formik";
 import type { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { FC, MouseEventHandler, useContext, useEffect, useMemo, useState } from "react";
 import Button from "src/components/Button";
 import Container from "src/components/Container";
 import DeleteButton from "src/components/DeleteButton";
 import FormikTextInput from "src/components/FormikTextInput";
 import ModalWindow, { ModalContext } from "src/components/ModalWindow";
 import * as Yup from "yup";
+
+import { Board, TaskStatus } from "@prisma/client";
+
 import { trpc } from "../utils/trpc";
 
 const Boards: NextPage = () => {
@@ -58,8 +61,7 @@ const BoardThumbnail: FC<IBoardThumbnail> = ({ name, id, tasks }) => {
     };
 
     tasks.forEach((task) => {
-      const taskStatus = task.status as TaskStatus;
-      taskCountsByStatus[taskStatus]++;
+      taskCountsByStatus[task.status]++;
       totalAmountOfTasks++;
     });
 
