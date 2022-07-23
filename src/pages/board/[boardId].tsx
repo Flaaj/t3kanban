@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import Button from "src/components/Button";
 import DeleteButton from "src/components/DeleteButton";
 import EditableText from "src/components/EditableText";
-import FormikTextInput from "src/components/FormikTextInput";
+import TextInput from "src/components/TextInput";
 import ModalWindow, { ModalContext } from "src/components/ModalWindow";
 import SelectInput from "src/components/SelectInput";
 import arrayFromEnum from "src/utils/arrayFromEnum";
@@ -225,12 +225,12 @@ const NewTaskForm: FC<INewTaskForm> = ({ className, boardId, status }) => {
     >
       <Form className="bg-gray-100 p-8 rounded-lg border border-gray-300">
         <h3 className="font-bold text-center text-2xl">Add New Task</h3>
-        <FormikTextInput //
+        <TextInput //
           name="name"
           label="Task name"
           placeholder="New task name..."
         />
-        <FormikTextInput //
+        <TextInput //
           name="description"
           label="Task description"
           placeholder="New board description..."

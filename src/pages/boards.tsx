@@ -7,7 +7,7 @@ import Link from "next/link";
 import Button from "src/components/Button";
 import Container from "src/components/Container";
 import DeleteButton from "src/components/DeleteButton";
-import FormikTextInput from "src/components/FormikTextInput";
+import TextInput from "src/components/TextInput";
 import ModalWindow, { ModalContext } from "src/components/ModalWindow";
 import * as Yup from "yup";
 
@@ -156,7 +156,7 @@ const NewBoardForm = () => {
     >
       <Form className="bg-gray-100 p-8 rounded-lg border border-gray-300">
         <h3 className="font-bold text-center text-2xl">Add New Board</h3>
-        <FormikTextInput //
+        <TextInput //
           name="name"
           label="Board name"
           placeholder="New board name..."

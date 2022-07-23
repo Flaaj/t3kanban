@@ -3,12 +3,12 @@ import React, { ComponentProps, FC } from "react";
 import cn from "clsx";
 import { useField } from "formik";
 
-interface IFormikTextInput extends ComponentProps<"input"> {
+interface ITextInput extends ComponentProps<"input"> {
   label: string;
   name: string;
 }
 
-const FormikTextInput: FC<IFormikTextInput> = ({ className, name, label, ...props }) => {
+const TextInput: FC<ITextInput> = ({ className, name, label, ...props }) => {
   const [input, meta] = useField(name);
 
   const displayError = meta.touched && meta.error;
@@ -24,4 +24,4 @@ const FormikTextInput: FC<IFormikTextInput> = ({ className, name, label, ...prop
   );
 };
 
-export default FormikTextInput;
+export default TextInput;
