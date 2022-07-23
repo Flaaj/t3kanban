@@ -85,6 +85,10 @@ const SiteLogo: FC = () => {
 const LoggedAs = () => {
   const session = useSession();
 
+  if (session.status === "unauthenticated") {
+    return null;
+  }
+
   if (!session.data) {
     return (
       <div className="flex items-center text-cyan-900">
