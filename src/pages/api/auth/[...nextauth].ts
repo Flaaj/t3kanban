@@ -13,6 +13,7 @@ export const authOptions: NextAuthOptions = {
   //   signIn: "/auth/signin",
   //   error: "/auth/error",
   // },
+  secret: process.env.NEXTAUTH_SECRET,
   providers: [
     GithubProvider({
       clientId: process.env.GITHUB_ID!,
