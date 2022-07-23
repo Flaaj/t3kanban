@@ -13,10 +13,18 @@ interface IAppLayout {
 
 const AppLayout: FC<IAppLayout> = ({ children: route }) => {
   const session = useSession();
+
   if (session.status === "loading") {
-    return null;
+    return (
+      <div className="h-screen overflow-hidden grid grid-cols-[200px_1fr] grid-rows-[auto,_1fr]">
+        <header className="col-span-2 p-2 md:p-4 bg-indigo-300 shadow-md flex justify-between">
+          <SiteLogo />
+          <LoggedAs />
+        </header>
+      </div>
+    );
   }
-  
+
   if (!session.data) {
     return (
       <div className="h-screen overflow-hidden grid grid-cols-[200px_1fr] grid-rows-[auto,_1fr]">
