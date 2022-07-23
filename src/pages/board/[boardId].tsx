@@ -214,7 +214,8 @@ const NewTaskForm: FC<INewTaskForm> = ({ className, boardId, status }) => {
       initialValues={{ name: "", description: "" }}
       validationSchema={Yup.object().shape({
         name: Yup.string() //
-          .required("Please, add a name for your new task"),
+          .required("Please, add a name for your new task")
+          .min(5, "Task name must consist of at least 5 letters"),
         description: Yup.string() //
           .required("Please, add a description for your new task"),
       })}

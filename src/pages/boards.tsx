@@ -146,7 +146,9 @@ const NewBoardForm = () => {
     <Formik
       initialValues={{ name: "" }}
       validationSchema={Yup.object().shape({
-        name: Yup.string().required("Please, add a name for your new board"),
+        name: Yup.string()
+          .required("Please, add a name for your new board")
+          .min(5, "Board name must consist of at least 5 letters"),
       })}
       onSubmit={async ({ name }) => {
         addNewBoard.mutate({ name });
