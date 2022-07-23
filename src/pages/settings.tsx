@@ -1,7 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
+import Container from "src/components/Container";
 
-import Container from "../components/atoms/Container";
 
 const Settings: NextPage = () => {
   return (

@@ -3,8 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-
-import Container from "../components/atoms/Container";
+import Container from "src/components/Container";
 
 const Home: NextPage = () => {
   return (

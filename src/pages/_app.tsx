@@ -7,15 +7,15 @@ import superjson from "superjson";
 // src/pages/_app.tsx
 import { withTRPC } from "@trpc/next";
 
-import AppLayout from "../components/AppLayout";
+import Layout from "../components/Layout";
 import type { AppRouter } from "../server/router";
 
 const MyApp: AppType = ({ Component, pageProps: { session, ...pageProps } }) => {
   return (
     <SessionProvider session={session}>
-      <AppLayout>
+      <Layout>
         <Component {...pageProps} />
-      </AppLayout>
+      </Layout>
       <div id="modal-root" />
     </SessionProvider>
   );
