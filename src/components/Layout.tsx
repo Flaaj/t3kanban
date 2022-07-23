@@ -12,6 +12,26 @@ interface IAppLayout {
 }
 
 const AppLayout: FC<IAppLayout> = ({ children: route }) => {
+  const session = useSession();
+
+  if (!session.data) {
+    return (
+      <div className="h-screen overflow-hidden grid grid-cols-[200px_1fr] grid-rows-[auto,_1fr]">
+        <header className="col-span-2 p-2 md:p-4 bg-indigo-300 shadow-md flex justify-between">
+          <SiteLogo />
+          <LoggedAs />
+        </header>
+
+        <button
+          className="m-auto py-3 px-8 text-xl text-white bg-black hover:bg-opacity-90 transition rounded-xl col-span-2"
+          onClick={() => signIn()}
+        >
+          Login
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className="h-screen overflow-hidden grid grid-cols-[200px_1fr] grid-rows-[auto,_1fr]">
       <header className="col-span-2 p-2 md:p-4 bg-indigo-300 shadow-md flex justify-between">
