@@ -13,7 +13,10 @@ interface IAppLayout {
 
 const AppLayout: FC<IAppLayout> = ({ children: route }) => {
   const session = useSession();
-
+  if (session.status === "loading") {
+    return null;
+  }
+  
   if (!session.data) {
     return (
       <div className="h-screen overflow-hidden grid grid-cols-[200px_1fr] grid-rows-[auto,_1fr]">
