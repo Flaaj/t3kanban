@@ -5,6 +5,7 @@ import { createRouter } from "./context";
 export const boardsRouter = createRouter()
   .query("getAll", {
     async resolve({ ctx }) {
+      console.log(ctx)
       if (!ctx.session) return ctx.res?.status(401).json({ status: 401 });
       const userId = ctx.session?.userId;
       return await ctx.prisma.board.findMany({
