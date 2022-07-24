@@ -17,14 +17,22 @@ export const authOptions: NextAuthOptions = {
   // secret: "cl5ybvrv5000009mt9n0635oc",
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
-    GithubProvider({
-      clientId: process.env.GITHUB_ID!,
-      clientSecret: process.env.GITHUB_SECRET!,
-    }),
-    DiscordProvider({
-      clientId: process.env.DISCORD_ID!,
-      clientSecret: process.env.DISCORD_SECRET!,
-    }),
+    ...(process.env.GITHUB_ID && process.env.GITHUB_SECRET
+      ? [
+          GithubProvider({
+            clientId: process.env.GITHUB_ID,
+            clientSecret: process.env.GITHUB_SECRET,
+          }),
+        ]
+      : []),
+    ...(process.env.DISCORD_ID && process.env.DISCORD_SECRET
+      ? [
+          DiscordProvider({
+            clientId: process.env.DISCORD_ID,
+            clientSecret: process.env.DISCORD_SECRET,
+          }),
+        ]
+      : []),
     // ...add more providers here
   ],
   callbacks: {
