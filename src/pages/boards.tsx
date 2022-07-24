@@ -70,7 +70,7 @@ const BoardThumbnail: FC<IBoardThumbnail> = ({ name, id, tasks }) => {
 
   const removeBoard = trpc.useMutation(["boards.remove"], {
     onSuccess() {
-      utils.invalidateQueries("boards.getAll");
+      utils.refetchQueries(["boards.getAll"]);
     },
   });
 
@@ -137,7 +137,7 @@ const NewBoardForm = () => {
   const { closeModal } = useContext(ModalContext);
   const addNewBoard = trpc.useMutation(["boards.create"], {
     onSuccess: () => {
-      utils.invalidateQueries(["boards.getAll"]);
+      utils.refetchQueries(["boards.getAll"]);
       closeModal();
     },
   });
@@ -150,7 +150,7 @@ const NewBoardForm = () => {
           .required("Please, add a name for your new board")
           .min(5, "Board name must consist of at least 5 letters"),
       })}
-      onSubmit={async ({ name }) => {
+      onSubmit={({ name }) => {
         addNewBoard.mutate({ name });
       }}
     >

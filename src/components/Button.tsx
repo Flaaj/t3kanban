@@ -11,9 +11,9 @@ const Button: FC<IButton> = ({ variant, className, children, ...props }) => {
     <button //
       className={cn(
         className,
-        "rounded-lg py-2 px-4 min-w-[100px]",
-        variant === "filled" && "bg-black text-white",
-        variant === "empty" && "border-2 border-black"
+        "rounded-lg py-2 px-4 min-w-[100px] transition",
+        variant === "filled" && "bg-black text-white hover:bg-opacity-90",
+        variant === "empty" && "border-2 border-black hover:border-opacity-60 "
       )}
       {...props}
     >

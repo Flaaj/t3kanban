@@ -112,8 +112,12 @@ export interface ITodoCard extends Task {}
 
 const TodoCard: FC<ITodoCard> = ({ id, name, description, status }) => {
   const utils = trpc.useContext();
-  const removeTask = trpc.useMutation(["tasks.remove"], { onSuccess: () => utils.refetchQueries(["tasks.getAll"]) });
-  const changeStatus = trpc.useMutation(["tasks.update"], { onSuccess: () => utils.refetchQueries(["tasks.getAll"]) });
+  const removeTask = trpc.useMutation(["tasks.remove"], {
+    onSuccess: () => utils.refetchQueries(["tasks.getAll"]),
+  });
+  const changeStatus = trpc.useMutation(["tasks.update"], {
+    onSuccess: () => utils.refetchQueries(["tasks.getAll"]),
+  });
 
   const handleRemoveTask: MouseEventHandler = (e) => {
     e.preventDefault();
@@ -192,18 +196,19 @@ const AddNewTaskButton: FC<IAddNewTaskButton> = ({ status }) => {
     </>
   );
 };
+
 interface INewTaskForm {
   className?: string;
   boardId: string;
   status: TaskStatus;
 }
 
-const NewTaskForm: FC<INewTaskForm> = ({ className, boardId, status }) => {
+const NewTaskForm: FC<INewTaskForm> = ({ boardId, status }) => {
   const utils = trpc.useContext();
   const { closeModal } = useContext(ModalContext);
   const addNewTask = trpc.useMutation(["tasks.create"], {
     onSuccess: () => {
-      utils.invalidateQueries(["tasks.getAll"]);
+      utils.refetchQueries(["tasks.getAll"]);
       closeModal();
     },
   });
@@ -218,7 +223,7 @@ const NewTaskForm: FC<INewTaskForm> = ({ className, boardId, status }) => {
         description: Yup.string() //
           .required("Please, add a description for your new task"),
       })}
-      onSubmit={async ({ name, description }) => {
+      onSubmit={({ name, description }) => {
         addNewTask.mutate({ name, description, status, boardId });
       }}
     >
