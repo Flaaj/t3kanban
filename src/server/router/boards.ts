@@ -25,12 +25,10 @@ export const boardsRouter = createRouter()
               TESTING: 0,
               DONE: 0,
             };
-
             board.tasks.forEach((task) => {
               taskCountsByStatus[task.status]++;
               totalAmountOfTasks++;
             });
-
             return { ...board, tasks: { status: taskCountsByStatus, total: totalAmountOfTasks } };
           })
         );
