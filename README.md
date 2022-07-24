@@ -13,7 +13,7 @@ https://t3kanban.vercel.app/
 Using postgres database provided by Supabase
 
 # Instalation: 
-- Add .env file based on contents .env-example file and add your environment variables there
+- Add .env file based on contents of .env-example file and add your environment variables there
 - ```yarn``` or ```npm install``` - to install all packages
 - ```npx prisma migrate dev --name [your-migration-name]``` - to migrate your prisma schema to your database
 - ```yarn dev``` or ```npm run dev``` - to start developing
