@@ -14,7 +14,6 @@ export const authOptions: NextAuthOptions = {
   //   signIn: "/auth/signin",
   //   error: "/auth/error",
   // },
-  // secret: "cl5ybvrv5000009mt9n0635oc",
   secret: process.env.NEXTAUTH_SECRET,
   providers: [
     ...(process.env.GITHUB_ID && process.env.GITHUB_SECRET
