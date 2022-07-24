@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 import Container from "src/components/Container";
+import { trpc } from "src/utils/trpc";
 
 const Home: NextPage = () => {
   return (

@@ -1,19 +1,30 @@
-import { FC, MouseEventHandler, useContext, useMemo, useState } from "react";
+import {
+  FC,
+  MouseEventHandler,
+  useContext,
+  useState,
+} from 'react';
 
-import { Form, Formik } from "formik";
-import type { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import Button from "src/components/Button";
-import Container from "src/components/Container";
-import DeleteButton from "src/components/DeleteButton";
-import TextInput from "src/components/TextInput";
-import ModalWindow, { ModalContext } from "src/components/ModalWindow";
-import * as Yup from "yup";
+import {
+  Form,
+  Formik,
+} from 'formik';
+import type { NextPage } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
+import Button from 'src/components/Button';
+import Container from 'src/components/Container';
+import DeleteButton from 'src/components/DeleteButton';
+import ModalWindow, { ModalContext } from 'src/components/ModalWindow';
+import TextInput from 'src/components/TextInput';
+import * as Yup from 'yup';
 
-import { Board, TaskStatus } from "@prisma/client";
+import {
+  Board,
+  TaskStatus,
+} from '@prisma/client';
 
-import { trpc } from "../utils/trpc";
+import { trpc } from '../utils/trpc';
 
 const Boards: NextPage = () => {
   const boards = trpc.useQuery(["boards.getAll"]);
@@ -43,30 +54,11 @@ const Boards: NextPage = () => {
 export default Boards;
 
 interface IBoardThumbnail extends Board {
-  tasks: { status: TaskStatus }[];
+  tasks: { status: { [key in TaskStatus]: number }; total: number };
 }
 
 const BoardThumbnail: FC<IBoardThumbnail> = ({ name, id, tasks }) => {
   const utils = trpc.useContext();
-
-  const countedTasks = useMemo(() => {
-    let totalAmountOfTasks = 0;
-    const taskCountsByStatus: { [key in TaskStatus]: number } = {
-      BACKLOG: 0,
-      TODO: 0,
-      IN_PROGRESS: 0,
-      ICE_BOXED: 0,
-      TESTING: 0,
-      DONE: 0,
-    };
-
-    tasks.forEach((task) => {
-      taskCountsByStatus[task.status]++;
-      totalAmountOfTasks++;
-    });
-
-    return { ...taskCountsByStatus, total: totalAmountOfTasks };
-  }, [tasks]);
 
   const removeBoard = trpc.useMutation(["boards.remove"], {
     onSuccess() {
@@ -85,25 +77,25 @@ const BoardThumbnail: FC<IBoardThumbnail> = ({ name, id, tasks }) => {
       <a className="flex flex-col p-4 rounded-xl bg-teal-200 h-full w-full shadow-lg border border-teal-400">
         <h2 className="font-bold text-lg text-stone-800 mb-3">{name}</h2>
         <h3 className="font-medium leading-5 mb-2">
-          Total tasks: <span className="font-normal">{countedTasks.total}</span>
+          Total tasks: <span className="font-normal">{tasks.total}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          Backlog: <span className="font-normal">{countedTasks.BACKLOG}</span>
+          Backlog: <span className="font-normal">{tasks.status.BACKLOG}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          Todo: <span className="font-normal">{countedTasks.TODO}</span>
+          Todo: <span className="font-normal">{tasks.status.TODO}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          Ice boxed: <span className="font-normal">{countedTasks.ICE_BOXED}</span>
+          Ice boxed: <span className="font-normal">{tasks.status.ICE_BOXED}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          In progress: <span className="font-normal">{countedTasks.IN_PROGRESS}</span>
+          In progress: <span className="font-normal">{tasks.status.IN_PROGRESS}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          Testing: <span className="font-normal">{countedTasks.TESTING}</span>
+          Testing: <span className="font-normal">{tasks.status.TESTING}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          Done: <span className="font-normal">{countedTasks.DONE}</span>
+          Done: <span className="font-normal">{tasks.status.DONE}</span>
         </h3>
         <DeleteButton onClick={deleteBoard} />
       </a>
