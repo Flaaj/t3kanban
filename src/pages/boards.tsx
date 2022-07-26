@@ -1,35 +1,22 @@
-import {
-  FC,
-  MouseEventHandler,
-  useContext,
-  useState,
-} from 'react';
+import { FC, MouseEventHandler, useContext, useState } from "react";
 
-import {
-  Form,
-  Formik,
-} from 'formik';
-import type { NextPage } from 'next';
-import Head from 'next/head';
-import Link from 'next/link';
-import Button from 'src/components/Button';
-import Container from 'src/components/Container';
-import DeleteButton from 'src/components/DeleteButton';
-import ModalWindow, { ModalContext } from 'src/components/ModalWindow';
-import TextInput from 'src/components/TextInput';
-import * as Yup from 'yup';
+import { Form, Formik } from "formik";
+import type { NextPage } from "next";
+import Head from "next/head";
+import Link from "next/link";
+import Button from "src/components/Button";
+import Container from "src/components/Container";
+import DeleteButton from "src/components/DeleteButton";
+import ModalWindow, { ModalContext } from "src/components/ModalWindow";
+import TextInput from "src/components/TextInput";
+import * as Yup from "yup";
 
-import {
-  Board,
-  TaskStatus,
-} from '@prisma/client';
+import { Board, TaskStatus } from "@prisma/client";
 
-import { trpc } from '../utils/trpc';
+import { trpc } from "../utils/trpc";
 
 const Boards: NextPage = () => {
   const boards = trpc.useQuery(["boards.getAll"]);
-
-  console.log(boards.data);
 
   return (
     <>
@@ -134,6 +121,10 @@ const NewBoardForm = () => {
     },
   });
 
+  if (addNewBoard.isLoading) {
+    return <p className="w-[460px] p-8">Loading...</p>;
+  }
+
   return (
     <Formik
       initialValues={{ name: "" }}
@@ -146,7 +137,7 @@ const NewBoardForm = () => {
         addNewBoard.mutate({ name });
       }}
     >
-      <Form className="bg-gray-100 p-8 rounded-lg border border-gray-300">
+      <Form className="bg-gray-100 p-8 rounded-lg border border-gray-300 w-[460px]">
         <h3 className="font-bold text-center text-2xl">Add New Board</h3>
         <TextInput //
           name="name"

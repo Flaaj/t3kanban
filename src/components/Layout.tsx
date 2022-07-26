@@ -11,7 +11,7 @@ interface ILayout {
   children: ReactNode;
 }
 
-const Layout: FC<ILayout> = ({ children: route }) => {
+const Layout: FC<ILayout> = ({ children }) => {
   const session = useSession();
 
   if (session.status === "loading") {
@@ -54,7 +54,7 @@ const Layout: FC<ILayout> = ({ children: route }) => {
         <NavMenu navItems={navItems} />
       </aside>
 
-      <main className="h-full overflow-auto p-4 grid">{route}</main>
+      <main className="h-full overflow-auto p-4">{children}</main>
     </div>
   );
 };

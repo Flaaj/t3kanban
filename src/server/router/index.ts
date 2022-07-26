@@ -1,9 +1,9 @@
 import superjson from "superjson";
 
-import { authRouter } from "./auth";
-import { boardsRouter } from "./boards";
+import { authRouter } from "./_auth";
+import { boardsRouter } from "./_boards";
+import { tasksRouter } from "./_tasks";
 import { createRouter } from "./context";
-import { tasksRouter } from "./tasks";
 
 export const appRouter = createRouter()
   .transformer(superjson)

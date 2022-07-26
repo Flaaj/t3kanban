@@ -18,6 +18,7 @@ import { Task, TaskStatus } from "@prisma/client";
 
 const Board = () => {
   const router = useRouter();
+  const { data: board } = trpc.useQuery(["boards.getById", { id: router.query.boardId as string }]);
   const { data: tasks } = trpc.useQuery(["tasks.getAll", { boardId: router.query.boardId as string }], {
     select: (data) => {
       const tasks: { [key in TaskStatus]: Task[] } = {
@@ -36,7 +37,7 @@ const Board = () => {
     },
   });
 
-  if (!tasks) {
+  if (!board || !tasks) {
     return <>Loading...</>;
   }
 
@@ -47,8 +48,8 @@ const Board = () => {
         <meta name="description" content="A fullstack kanban app made with t3 stack" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-
-      <div className="grid grid-cols-6 w-[1800px] gap-6 h-full">
+      <h1 className="text-center text-xl font-bold h-10 absolute">Board: {board.name}</h1>
+      <div className="grid grid-cols-6 w-[1800px] gap-6 h-full pt-10">
         <BoardColumn //
           label="Backlog"
           status={TaskStatus.BACKLOG}
@@ -94,7 +95,7 @@ interface IBoardColumn {
 
 const BoardColumn: FC<IBoardColumn> = ({ todos, label, status }) => {
   return (
-    <div className="bg-red-100 p-4 rounded-2xl h-full grid grid-rows-[auto,_1fr] shadow-xl">
+    <div className="bg-slate-100 border border-slate-200 p-4 rounded-2xl h-full grid grid-rows-[auto,_1fr] shadow-xl">
       <h3 className="uppercase text-center font-bold tracking-widest mb-4">{label}</h3>
       <ul className="h-full">
         {todos.map((todo) => (

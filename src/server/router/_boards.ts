@@ -1,13 +1,18 @@
 import { TaskStatus } from "@prisma/client";
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
 import { createRouter } from "./context";
 
 export const boardsRouter = createRouter()
+  .middleware(async ({ ctx, next }) => {
+    if (!ctx.session) {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+    return next();
+  })
   .query("getAll", {
     async resolve({ ctx }) {
-      console.log(ctx);
-      if (!ctx.session) return ctx.res?.status(401).json({ status: 401 });
       const userId = ctx.session?.userId;
       return await ctx.prisma.board
         .findMany({
@@ -29,25 +34,43 @@ export const boardsRouter = createRouter()
               taskCountsByStatus[task.status]++;
               totalAmountOfTasks++;
             });
-            return { ...board, tasks: { status: taskCountsByStatus, total: totalAmountOfTasks } };
+            return {
+              ...board,
+              tasks: { status: taskCountsByStatus, total: totalAmountOfTasks },
+            };
           })
         );
     },
   })
-
-  .mutation("create", {
-    input: z.object({ name: z.string() }),
-    async resolve({ ctx, input: { name } }) {
-      if (!ctx.session) return ctx.res?.status(401).json({ status: 401 });
-      const userId = ctx.session?.userId;
-      const board = { userId, name };
-      return await ctx.prisma.board.create({ data: board });
+  .query("getById", {
+    input: z.object({
+      id: z.string(),
+    }),
+    async resolve({ input: { id }, ctx }) {
+      return await ctx.prisma.board.findFirst({
+        where: { id },
+      });
     },
   })
-
+  .mutation("create", {
+    input: z.object({
+      name: z.string(),
+    }),
+    async resolve({ ctx, input: { name } }) {
+      const userId = ctx.session?.userId;
+      const board = { userId, name };
+      return await ctx.prisma.board.create({
+        data: board,
+      });
+    },
+  })
   .mutation("remove", {
-    input: z.object({ id: z.string() }),
+    input: z.object({
+      id: z.string(),
+    }),
     async resolve({ ctx, input: { id } }) {
-      return await ctx.prisma.board.delete({ where: { id } });
+      return await ctx.prisma.board.delete({
+        where: { id },
+      });
     },
   });
