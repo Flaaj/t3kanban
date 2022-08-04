@@ -9,11 +9,10 @@ import Container from "src/components/Container";
 import DeleteButton from "src/components/DeleteButton";
 import ModalWindow, { ModalContext } from "src/components/ModalWindow";
 import TextInput from "src/components/TextInput";
+import { ArrayElement } from "src/utils/ts-utils";
 import * as Yup from "yup";
 
-import { Board, TaskStatus } from "@prisma/client";
-
-import { trpc } from "../utils/trpc";
+import { InferQueryOutput, trpc } from "../utils/trpc";
 
 const Boards: NextPage = () => {
   const boards = trpc.useQuery(["boards.getAll"]);
@@ -40,16 +39,14 @@ const Boards: NextPage = () => {
 
 export default Boards;
 
-interface IBoardThumbnail extends Board {
-  tasks: { status: { [key in TaskStatus]: number }; total: number };
-}
+interface IBoardThumbnail extends ArrayElement<InferQueryOutput<"boards.getAll">> {}
 
-const BoardThumbnail: FC<IBoardThumbnail> = ({ name, id, tasks }) => {
-  const utils = trpc.useContext();
+const BoardThumbnail: FC<IBoardThumbnail> = ({ name, id, taskCounts }) => {
+  const trpcContext = trpc.useContext();
 
   const removeBoard = trpc.useMutation(["boards.remove"], {
     onSuccess() {
-      utils.refetchQueries(["boards.getAll"]);
+      trpcContext.refetchQueries(["boards.getAll"]);
     },
   });
 
@@ -64,25 +61,25 @@ const BoardThumbnail: FC<IBoardThumbnail> = ({ name, id, tasks }) => {
       <a className="flex flex-col p-4 rounded-xl bg-teal-200 h-full w-full shadow-lg border border-teal-400">
         <h2 className="font-bold text-lg text-stone-800 mb-3">{name}</h2>
         <h3 className="font-medium leading-5 mb-2">
-          Total tasks: <span className="font-normal">{tasks.total}</span>
+          Total tasks: <span className="font-normal">{taskCounts.ALL}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          Backlog: <span className="font-normal">{tasks.status.BACKLOG}</span>
+          Backlog: <span className="font-normal">{taskCounts.byStatus.BACKLOG}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          Todo: <span className="font-normal">{tasks.status.TODO}</span>
+          Todo: <span className="font-normal">{taskCounts.byStatus.TODO}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          Ice boxed: <span className="font-normal">{tasks.status.ICE_BOXED}</span>
+          Ice boxed: <span className="font-normal">{taskCounts.byStatus.ICE_BOXED}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          In progress: <span className="font-normal">{tasks.status.IN_PROGRESS}</span>
+          In progress: <span className="font-normal">{taskCounts.byStatus.IN_PROGRESS}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          Testing: <span className="font-normal">{tasks.status.TESTING}</span>
+          Testing: <span className="font-normal">{taskCounts.byStatus.TESTING}</span>
         </h3>
         <h3 className="font-medium leading-5">
-          Done: <span className="font-normal">{tasks.status.DONE}</span>
+          Done: <span className="font-normal">{taskCounts.byStatus.DONE}</span>
         </h3>
         <DeleteButton onClick={deleteBoard} />
       </a>

@@ -13,36 +13,6 @@ interface ILayout {
 
 const Layout: FC<ILayout> = ({ children }) => {
   const session = useSession();
-
-  if (session.status === "loading") {
-    return (
-      <div className="h-screen overflow-hidden grid grid-cols-[200px_1fr] grid-rows-[auto,_1fr]">
-        <header className="col-span-2 p-2 md:p-4 bg-indigo-300 shadow-md flex justify-between">
-          <SiteLogo />
-          <LoggedAs />
-        </header>
-      </div>
-    );
-  }
-
-  if (!session.data) {
-    return (
-      <div className="h-screen overflow-hidden grid grid-cols-[200px_1fr] grid-rows-[auto,_1fr]">
-        <header className="col-span-2 p-2 md:p-4 bg-indigo-300 shadow-md flex justify-between">
-          <SiteLogo />
-          <LoggedAs />
-        </header>
-
-        <button
-          className="m-auto py-3 px-8 text-xl text-white bg-black hover:bg-opacity-90 transition rounded-xl col-span-2"
-          onClick={() => signIn()}
-        >
-          Login
-        </button>
-      </div>
-    );
-  }
-
   return (
     <div className="h-screen overflow-hidden grid grid-cols-[200px_1fr] grid-rows-[auto,_1fr]">
       <header className="col-span-2 p-2 md:p-4 bg-indigo-300 shadow-md flex justify-between">
@@ -50,11 +20,24 @@ const Layout: FC<ILayout> = ({ children }) => {
         <LoggedAs />
       </header>
 
-      <aside className="h-full bg-slate-200 py-4 px-3 shadow-md">
-        <NavMenu navItems={navItems} />
-      </aside>
+      {session.data && (
+        <>
+          <aside className="h-full bg-slate-200 py-4 px-3 shadow-md">
+            <NavMenu navItems={navItems} />
+          </aside>
 
-      <main className="h-full overflow-auto p-4">{children}</main>
+          <main className="h-full overflow-auto p-4">{children}</main>
+        </>
+      )}
+
+      {session.status !== "loading" && !session.data && (
+        <button
+          className="m-auto py-3 px-8 text-xl text-white bg-black hover:bg-opacity-90 transition rounded-xl col-span-2"
+          onClick={() => signIn()}
+        >
+          Login
+        </button>
+      )}
     </div>
   );
 };

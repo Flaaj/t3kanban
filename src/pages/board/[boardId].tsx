@@ -21,19 +21,10 @@ const Board = () => {
   const { data: board } = trpc.useQuery(["boards.getById", { id: router.query.boardId as string }]);
   const { data: tasks } = trpc.useQuery(["tasks.getAll", { boardId: router.query.boardId as string }], {
     select: (data) => {
-      const tasks: { [key in TaskStatus]: Task[] } = {
-        BACKLOG: [],
-        TODO: [],
-        IN_PROGRESS: [],
-        ICE_BOXED: [],
-        TESTING: [],
-        DONE: [],
-      };
-      if (!data) return tasks;
-
-      data.forEach((task) => tasks[task.status].push(task));
-
-      return tasks;
+      return data.reduce(
+        (tasks, task) => ({ ...tasks, [task.status]: tasks[task.status]?.concat(task) || [task] }),
+        {} as { [key in TaskStatus]: Task[] }
+      );
     },
   });
 
@@ -48,38 +39,15 @@ const Board = () => {
         <meta name="description" content="A fullstack kanban app made with t3 stack" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1 className="text-center text-xl font-bold h-10 absolute">Board: {board.name}</h1>
       <div className="grid grid-cols-6 w-[1800px] gap-6 h-full pt-10">
-        <BoardColumn //
-          label="Backlog"
-          status={TaskStatus.BACKLOG}
-          todos={tasks.BACKLOG}
-        />
-        <BoardColumn //
-          label="Todo"
-          status={TaskStatus.TODO}
-          todos={tasks.TODO}
-        />
-        <BoardColumn //
-          label="In progress"
-          status={TaskStatus.IN_PROGRESS}
-          todos={tasks.IN_PROGRESS}
-        />
-        <BoardColumn //
-          label="Ice boxed"
-          status={TaskStatus.ICE_BOXED}
-          todos={tasks.ICE_BOXED}
-        />
-        <BoardColumn //
-          label="Testing"
-          status={TaskStatus.TESTING}
-          todos={tasks.TESTING}
-        />
-        <BoardColumn //
-          label="Done"
-          status={TaskStatus.DONE}
-          todos={tasks.DONE}
-        />
+        {arrayFromEnum(TaskStatus).map((status) => (
+          <BoardColumn
+            key={status}
+            label={capitalizeString(status.replace(/_/g, " "))}
+            status={TaskStatus[status]}
+            todos={tasks[status] || []}
+          />
+        ))}
       </div>
     </>
   );
@@ -100,7 +68,7 @@ const BoardColumn: FC<IBoardColumn> = ({ todos, label, status }) => {
       <ul className="h-full">
         {todos.map((todo) => (
           <li key={todo.id} className="mb-2 last:mb-0">
-            <TodoCard {...todo} status={todo.status} />
+            <TaskCard {...todo} status={todo.status} />
           </li>
         ))}
         <AddNewTaskButton status={status} />
@@ -109,15 +77,15 @@ const BoardColumn: FC<IBoardColumn> = ({ todos, label, status }) => {
   );
 };
 
-export interface ITodoCard extends Task {}
+export interface ITaskCard extends Task {}
 
-const TodoCard: FC<ITodoCard> = ({ id, name, description, status }) => {
-  const utils = trpc.useContext();
+const TaskCard: FC<ITaskCard> = ({ id, name, description, status }) => {
+  const trpcContext = trpc.useContext();
   const removeTask = trpc.useMutation(["tasks.remove"], {
-    onSuccess: () => utils.refetchQueries(["tasks.getAll"]),
+    onSuccess: () => trpcContext.refetchQueries(["tasks.getAll"]),
   });
   const changeStatus = trpc.useMutation(["tasks.update"], {
-    onSuccess: () => utils.refetchQueries(["tasks.getAll"]),
+    onSuccess: () => trpcContext.refetchQueries(["tasks.getAll"]),
   });
 
   const handleRemoveTask: MouseEventHandler = (e) => {
@@ -205,11 +173,11 @@ interface INewTaskForm {
 }
 
 const NewTaskForm: FC<INewTaskForm> = ({ boardId, status }) => {
-  const utils = trpc.useContext();
+  const trpcContext = trpc.useContext();
   const { closeModal } = useContext(ModalContext);
   const addNewTask = trpc.useMutation(["tasks.create"], {
     onSuccess: () => {
-      utils.refetchQueries(["tasks.getAll"]);
+      trpcContext.refetchQueries(["tasks.getAll"]);
       closeModal();
     },
   });

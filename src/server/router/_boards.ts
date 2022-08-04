@@ -36,7 +36,7 @@ export const boardsRouter = createRouter()
             });
             return {
               ...board,
-              tasks: { status: taskCountsByStatus, total: totalAmountOfTasks },
+              taskCounts: { byStatus: taskCountsByStatus, ALL: totalAmountOfTasks },
             };
           })
         );

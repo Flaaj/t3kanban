@@ -1,17 +1,7 @@
-import React, {
-  FC,
-  HTMLInputTypeAttribute,
-  KeyboardEvent,
-  MouseEvent,
-  MouseEventHandler,
-  ReactNode,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { FC, HTMLInputTypeAttribute, KeyboardEvent, useEffect, useRef, useState } from "react";
+
 import cn from "clsx";
 import { useField, useFormikContext } from "formik";
-import { trpc } from "src/utils/trpc";
 
 interface IEditableText {
   name: string;
@@ -28,7 +18,7 @@ const EditableText: FC<IEditableText> = ({ name, className, tag, variant, type =
 
   const [isEditting, setIsEditting] = useState(false);
 
-  const [input] = useField(name);
+  const [input] = useField<string>(name);
   const form = useFormikContext();
 
   const props = {
@@ -40,7 +30,7 @@ const EditableText: FC<IEditableText> = ({ name, className, tag, variant, type =
   const inputProps = {
     type,
     onKeyDown: (e: KeyboardEvent) => {
-      if (!e.shiftKey && e.key === "Enter") {
+      if (!e.shiftKey && (e.key === "Enter" || e.key === "Space")) {
         e.preventDefault();
         form.handleSubmit();
         setIsEditting(false);
