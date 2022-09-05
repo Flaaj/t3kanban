@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from "react";
 
-import cn from "clsx";
+import clsx from "clsx"
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -149,7 +149,7 @@ const NavItem: FC<INavItem> = ({ icon, label, href }) => {
   return (
     <Link href={href}>
       <a
-        className={cn(
+        className={clsx(
           "transition shadow-sm w-full flex p-3 rounded-lg mb-2 last:mb-0",
           isCurrent ? "bg-slate-400" : "bg-slate-300 hover:bg-amber-50"
         )}

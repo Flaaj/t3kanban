@@ -1,7 +1,7 @@
 import React, { ComponentProps, createContext, FC, useContext, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 
-import cn from "clsx";
+import clsx from "clsx"
 import Image from "next/image";
 import closeIcon from "src/assets/vector/close-icon.svg";
 
@@ -23,10 +23,7 @@ const ModalWindow: FC<IModalWindow> = ({
   const containerRef = useRef<HTMLDivElement>();
 
   useEffect(() => {
-    const modalRoot = document.getElementById("modal-root");
-    if (!modalRoot) {
-      throw new Error("No #modal-root found in the document. Add element with id='modal-root' to use ModalWindow");
-    }
+    const modalRoot = document.body
 
     const container = document.createElement("div");
     containerRef.current = container;
@@ -57,7 +54,7 @@ const ModalWindow: FC<IModalWindow> = ({
             onClick={onBackgroundClick}
           >
             <div
-              className={cn(className, "p-4 bg-white border border-gray-200 rounded-lg")}
+              className={clsx(className, "p-4 bg-white border border-gray-200 rounded-lg")}
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex">
@@ -70,7 +67,7 @@ const ModalWindow: FC<IModalWindow> = ({
             </div>
           </div>
         </ModalContext.Provider>,
-        containerRef.current!
+        document.body
       )
     : null;
 };

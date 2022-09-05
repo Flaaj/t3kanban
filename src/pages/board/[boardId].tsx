@@ -18,17 +18,24 @@ import { Task, TaskStatus } from "@prisma/client";
 
 const Board = () => {
   const router = useRouter();
-  const { data: board } = trpc.useQuery(["boards.getById", { id: router.query.boardId as string }]);
   const { data: tasks } = trpc.useQuery(["tasks.getAll", { boardId: router.query.boardId as string }], {
-    select: (data) => {
-      return data.reduce(
-        (tasks, task) => ({ ...tasks, [task.status]: tasks[task.status]?.concat(task) || [task] }),
-        {} as { [key in TaskStatus]: Task[] }
-      );
+    select: (tasks) => {
+      const tasksByStatus: { [key in TaskStatus]: Task[] } = {
+        BACKLOG: [],
+        TODO: [],
+        IN_PROGRESS: [],
+        ICE_BOXED: [],
+        TESTING: [],
+        DONE: [],
+      };
+      tasks.forEach((task) => {
+        tasksByStatus[task.status].push(task);
+      });
+      return tasksByStatus;
     },
   });
 
-  if (!board || !tasks) {
+  if (!tasks) {
     return <>Loading...</>;
   }
 
@@ -173,17 +180,21 @@ interface INewTaskForm {
 }
 
 const NewTaskForm: FC<INewTaskForm> = ({ boardId, status }) => {
-  const trpcContext = trpc.useContext();
   const { closeModal } = useContext(ModalContext);
-  const addNewTask = trpc.useMutation(["tasks.create"], {
+
+  const trpcClient = trpc.useContext();
+  const { mutate: addNewTask } = trpc.useMutation(["tasks.create"], {
     onSuccess: () => {
-      trpcContext.refetchQueries(["tasks.getAll"]);
+      trpcClient.invalidateQueries(["tasks.getAll"]);
       closeModal();
     },
   });
 
   return (
     <Formik
+      onSubmit={({ name, description }) => {
+        addNewTask({ boardId, name, description, status });
+      }}
       initialValues={{ name: "", description: "" }}
       validationSchema={Yup.object().shape({
         name: Yup.string() //
@@ -192,9 +203,6 @@ const NewTaskForm: FC<INewTaskForm> = ({ boardId, status }) => {
         description: Yup.string() //
           .required("Please, add a description for your new task"),
       })}
-      onSubmit={({ name, description }) => {
-        addNewTask.mutate({ name, description, status, boardId });
-      }}
     >
       <Form className="bg-gray-100 p-8 rounded-lg border border-gray-300">
         <h3 className="font-bold text-center text-2xl">Add New Task</h3>

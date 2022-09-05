@@ -1,6 +1,6 @@
 import React, { FC, HTMLInputTypeAttribute, KeyboardEvent, useEffect, useRef, useState } from "react";
 
-import cn from "clsx";
+import clsx from "clsx"
 import { useField, useFormikContext } from "formik";
 
 interface IEditableText {
@@ -54,7 +54,7 @@ const EditableText: FC<IEditableText> = ({ name, className, tag, variant, type =
       return <input ref={inputRef} {...props} {...inputProps} />;
     }
     if (variant === "textarea") {
-      return <textarea ref={textAreaRef} {...props} {...inputProps} rows={12} className={cn(className, "px-2")} />;
+      return <textarea ref={textAreaRef} {...props} {...inputProps} rows={12} className={clsx(className, "px-2")} />;
     }
   }
 

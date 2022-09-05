@@ -1,6 +1,6 @@
 import React, { ComponentProps, FC } from "react";
 
-import cn from "clsx";
+import clsx from "clsx"
 import { useField } from "formik";
 
 interface ITextInput extends ComponentProps<"input"> {
@@ -14,7 +14,7 @@ const TextInput: FC<ITextInput> = ({ className, name, label, ...props }) => {
   const displayError = meta.touched && meta.error;
 
   return (
-    <label className={cn("py-4 flex flex-col text-xl lg:max-w-[400px]", className)}>
+    <label className={clsx("py-4 flex flex-col text-xl lg:max-w-[400px]", className)}>
       <p className="text-gray-800 mb-2 font-bold">{label}</p>
 
       <input className="border border-gray-200 p-3 rounded-lg" {...input} {...props} />

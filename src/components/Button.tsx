@@ -1,6 +1,6 @@
 import React, { ComponentProps, FC } from "react";
 
-import cn from "clsx";
+import clsx from "clsx";
 
 interface IButton extends ComponentProps<"button"> {
   variant: "filled" | "empty";
@@ -9,7 +9,7 @@ interface IButton extends ComponentProps<"button"> {
 const Button: FC<IButton> = ({ variant, className, children, ...props }) => {
   return (
     <button //
-      className={cn(
+      className={clsx(
         className,
         "rounded-lg py-2 px-4 min-w-[100px] transition",
         variant === "filled" && "bg-black text-white hover:bg-opacity-90",

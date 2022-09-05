@@ -21,7 +21,6 @@ export const boardsRouter = createRouter()
         })
         .then((boards) =>
           boards.map((board) => {
-            let totalAmountOfTasks = 0;
             const taskCountsByStatus: { [key in TaskStatus]: number } = {
               BACKLOG: 0,
               TODO: 0,
@@ -30,13 +29,10 @@ export const boardsRouter = createRouter()
               TESTING: 0,
               DONE: 0,
             };
-            board.tasks.forEach((task) => {
-              taskCountsByStatus[task.status]++;
-              totalAmountOfTasks++;
-            });
+            board.tasks.forEach((task) => taskCountsByStatus[task.status]++);
             return {
               ...board,
-              taskCounts: { byStatus: taskCountsByStatus, ALL: totalAmountOfTasks },
+              taskCounts: { byStatus: taskCountsByStatus, ALL: board.tasks.length },
             };
           })
         );
