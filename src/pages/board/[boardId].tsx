@@ -88,28 +88,30 @@ export interface ITaskCard extends Task {}
 
 const TaskCard: FC<ITaskCard> = ({ id, name, description, status }) => {
   const trpcContext = trpc.useContext();
-  const removeTask = trpc.useMutation(["tasks.remove"], {
+  const { mutate: removeTask } = trpc.useMutation(["tasks.remove"], {
     onSuccess: () => trpcContext.refetchQueries(["tasks.getAll"]),
   });
-  const changeStatus = trpc.useMutation(["tasks.update"], {
+  const { mutate: changeStatus } = trpc.useMutation(["tasks.update"], {
     onSuccess: () => trpcContext.refetchQueries(["tasks.getAll"]),
   });
 
   const handleRemoveTask: MouseEventHandler = (e) => {
     e.preventDefault();
     if (!confirm("Do you want to delete this task?")) return;
-    removeTask.mutate({ id });
+    removeTask({ id });
   };
 
   const onTaskStatusChange = (status: TaskStatus) => {
-    changeStatus.mutate({ id, status });
+    changeStatus({ id, status });
   };
 
   return (
     <div className="flex flex-col p-3 rounded-lg bg-sky-200 drop-shadow-md w-full border border-sky-400">
       <Formik
+        onSubmit={({ name, description }) => {
+          changeStatus({ id, name, description });
+        }}
         initialValues={{ name, description }}
-        onSubmit={({ name, description }) => changeStatus.mutate({ id, name, description })}
       >
         <Form>
           <EditableText className="font-bold pb-2 mb-1 border-b border-sky-300" name="name" variant="input" tag="h4">

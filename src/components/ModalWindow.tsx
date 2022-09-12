@@ -1,7 +1,7 @@
 import React, { ComponentProps, createContext, FC, useContext, useEffect, useMemo, useRef } from "react";
 import { createPortal } from "react-dom";
 
-import clsx from "clsx"
+import clsx from "clsx";
 import Image from "next/image";
 import closeIcon from "src/assets/vector/close-icon.svg";
 
@@ -20,21 +20,12 @@ const ModalWindow: FC<IModalWindow> = ({
   className,
   shouldCloseOnBackgroundClick = true,
 }) => {
-  const containerRef = useRef<HTMLDivElement>();
-
-  useEffect(() => {
-    const modalRoot = document.body
-
-    const container = document.createElement("div");
-    containerRef.current = container;
-
-    modalRoot.appendChild(container);
-    return () => {
-      modalRoot.removeChild(container);
-    };
-  }, []);
-
-  const contextValue = useMemo(() => ({ closeModal: () => handleClose() }), [handleClose]);
+  const contextValue = useMemo(
+    () => ({
+      closeModal: handleClose,
+    }),
+    [handleClose]
+  );
 
   const onBackgroundClick = () => {
     if (shouldCloseOnBackgroundClick) {
@@ -50,8 +41,8 @@ const ModalWindow: FC<IModalWindow> = ({
     ? createPortal(
         <ModalContext.Provider value={contextValue}>
           <div
-            className="fixed inset-0 flex justify-center items-center bg-opacity-50 bg-cyan-900"
             onClick={onBackgroundClick}
+            className="fixed inset-0 flex justify-center items-center bg-opacity-50 bg-cyan-900"
           >
             <div
               className={clsx(className, "p-4 bg-white border border-gray-200 rounded-lg")}
